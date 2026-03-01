@@ -844,15 +844,27 @@ const removeTyping = id => document.getElementById(id)?.remove();
 
 // ── Helpers ───────────────────────────────
 function md2html(t) {
-  return t
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/#{3} (.+)/g,'<h3>$1</h3>').replace(/#{2} (.+)/g,'<h2>$1</h2>').replace(/#{1} (.+)/g,'<h2>$1</h2>')
-    .replace(/\[(.+?)\]\((https?:\/\/.+?)\)/g,'<a href="$2" target="_blank" rel="noopener">$1 ↗</a>')
-    .replace(/(https?:\/\/[^\s<&]+)/g,'<a href="$1" target="_blank" rel="noopener">$1 ↗</a>')
-    .replace(/^[-•] (.+)/gm,'<li>$1</li>').replace(/^\d+\. (.+)/gm,'<li>$1</li>')
-    .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^([^<].*)/gm,'<p>$1</p>');
+  // 1. Escape HTML entities
+  t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // 2. Convert markdown links [text](url) FIRST — before raw URL pass
+  t = t.replace(/\[(.+?)\]\((https?:\/\/[^)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener">$1 ↗</a>');
+  // 3. Convert bare URLs — but ONLY if not already inside an <a> tag
+  t = t.replace(/(?<!href=")(https?:\/\/[^\s<&"]+)/g,
+    '<a href="$1" target="_blank" rel="noopener">$1 ↗</a>');
+  // 4. Bold, italic, headings
+  t = t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+       .replace(/\*(.+?)\*/g,'<em>$1</em>')
+       .replace(/#{3} (.+)/g,'<h3>$1</h3>')
+       .replace(/#{2} (.+)/g,'<h2>$1</h2>')
+       .replace(/#{1} (.+)/g,'<h2>$1</h2>');
+  // 5. Lists & paragraphs
+  t = t.replace(/^[-•] (.+)/gm,'<li>$1</li>')
+       .replace(/^\d+\. (.+)/gm,'<li>$1</li>')
+       .replace(/\n\n/g,'</p><p>')
+       .replace(/\n/g,'<br>')
+       .replace(/^([^<].*)/gm,'<p>$1</p>');
+  return t;
 }
 
 const esc = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
