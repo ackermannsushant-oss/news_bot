@@ -515,7 +515,8 @@
 
 <script>
 // ── State ─────────────────────────────────
-const API_BASE = 'http://localhost:5030';  // ← port fixed
+// Auto-detect: use relative URLs on Vercel, localhost for local dev
+const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5030' : '';
 let currentLang = 'en', currentCategory = 'top';
 let chatHistory = [], isSending = false;
 let ttsEnabled = false, activeSpeakBtn = null;
