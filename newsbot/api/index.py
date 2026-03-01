@@ -14,7 +14,7 @@ app = Flask(__name__, template_folder="../templates", static_folder="../static")
 CORS(app)
 
 # ── Config ────────────────────────────────────────────────────────────────────
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY = os.environ.get("sk_9XnGgV0qxaTTNAwgT459WGdyb3FYks8Y8EMo97AJVDXDS8a3jnpL", "")
 GROQ_MODEL   = "llama-3.3-70b-versatile"
 GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions"
 CACHE_TTL    = 600  # 10 minutes
